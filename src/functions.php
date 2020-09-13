@@ -17,5 +17,6 @@ function university_features() {
   register_nav_menu('footerLocationTwo', 'Footer Location Two');
 }
 
+// setting up website static files
 add_action('wp_enqueue_scripts', sprintf($format, $PREFIX, 'files'));
 add_action('after_setup_theme', sprintf($format, $PREFIX, 'features'));
