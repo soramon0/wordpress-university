@@ -19,6 +19,10 @@ function university_features() {
   register_nav_menu('headerMenuLocation', "Header Menu Location");
   register_nav_menu('footerLocationOne', 'Footer Location One');
   register_nav_menu('footerLocationTwo', 'Footer Location Two');
+  add_theme_support('post-thumbnails');
+  add_image_size('professor_landscape', 400, 260, true);
+  add_image_size('professor_portrait', 480, 650, true);
+  add_image_size('page_banner', 1500, 350, true);
 }
 
 function university_adjust_queries($query) {

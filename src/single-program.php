@@ -5,7 +5,7 @@
   while(have_posts()) {
     the_post(); ?>
      <div class="page-banner">
-      <div class="page-banner__bg-image" style="background-image: url(<?php echo get_theme_file_uri('/images/ocean.jpg') ?>);"></div>
+      <div class="page-banner__bg-image" style="background-image: url(<?php echo get_theme_file_uri('/images/ocean.jpg'); ?>);"></div>
       <div class="page-banner__content container container--narrow">
         <h1 class="page-banner__title"><?php the_title(); ?></h1>
         <div class="page-banner__intro">
@@ -31,6 +31,41 @@
       </div>
 
 			<?php
+
+          $professors = new WP_Query(array(
+            'posts_per_page' => -1,
+            'post_type' => 'professor',
+            'orderby' => 'title',
+            'order' => 'ASC',
+            'meta_query' => array(
+							array(
+                'key' => 'related_programs',
+                'compare' => 'LIKE',
+                'value' => '"' . get_the_ID() . '"',
+							)
+            )
+					));
+					
+					if ($professors->have_posts()) {
+						$title = get_the_title();
+						echo '<hr class="section-break">';
+						echo "<h2 class='headline headline--meduim'>$title Professors<h2>";
+
+            echo '<ul class="professor-cards">';
+						while($professors->have_posts()) {
+							$professors->the_post(); ?>
+              <li class="professor-card__list-item">
+                <a class="professor-card" href="<?php the_permalink(); ?>">
+                  <img class="professor-card__image" src="<?php the_post_thumbnail_url('professor_landscape'); ?>" alt="">
+                  <span class="professor-card__name"><?php the_title(); ?></span>
+                </a>
+              </li>
+            <?php }
+            echo '</ul>';
+          }
+          
+          wp_reset_postdata();
+
           $events = new WP_Query(array(
             'posts_per_page' => 2,
             'post_type' => 'event',
@@ -86,7 +121,6 @@
 							</div>
 						<?php }
 					}
-					wp_reset_postdata();
         ?>
     </div>
     
