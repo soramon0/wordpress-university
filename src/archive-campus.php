@@ -1,8 +1,8 @@
 <?php
 	get_header();
 	pageBanner(array(
-    'title' => 'All Programs',
-    'subtitle' => 'We have something for everyone. Have a look round'
+    'title' => 'Our Campuses',
+    'subtitle' => 'We have several conveniently located campuses'
 	));
 ?>
 
@@ -15,7 +15,7 @@
 					<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 				</li>
 			<?php }
-			echo paginate_links();
+				echo paginate_links();
 		?>
 	</ul>
 </div>

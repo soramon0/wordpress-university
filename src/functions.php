@@ -1,6 +1,5 @@
 <?php
 
-
 function actionName($name) {
   $PREFIX = 'university';
   $format = '%s_%s';
@@ -39,6 +38,9 @@ function university_files() {
   wp_enqueue_style('custom-google-fonts', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
   wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
   wp_enqueue_style('university_main_styles', get_stylesheet_uri());
+  wp_localize_script('main-university-js', 'universityData', array(
+    'base_url' => get_site_url()
+  ));
 }
 
 function university_features() {
@@ -71,11 +73,20 @@ function university_adjust_queries($query) {
           'type' => 'numeric' 
         )
       ));
+    } else if (is_post_type_archive('campus')) {
+      $query->set('posts_per_page', -1);
     }
   }
-
 }
 
+// WP REST API
+function university_api() {
+  register_rest_field('post', 'authorName', array(
+    'get_callback' => function() {return get_the_author();}
+  )); 
+}
+
+add_action('rest_api_init', actionName('api'));
 add_action('wp_enqueue_scripts', actionName('files'));
 add_action('after_setup_theme', actionName('features'));
 add_action('pre_get_posts', actionName('adjust_queries'));
