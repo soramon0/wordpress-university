@@ -21,12 +21,18 @@ class Search {
 		this.searchField.addEventListener('keyup', this.searchInputs.bind(this))
 	}
 
-	openOverlay() {
+	openOverlay(e = null) {
+		if (e) {
+			e.preventDefault()
+		}
+
 		this.searchOverlay.classList.add('search-overlay--active')
 		document.body.classList.add('body-no-scroll')
 		this.searchField.value = ''
 		setTimeout(() => this.searchField.focus(), 350);
 		this.isOverlayOpen = true
+
+		return false
 	}
 
 	closeOverlay() {
