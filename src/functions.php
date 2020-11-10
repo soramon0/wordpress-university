@@ -1,5 +1,7 @@
 <?php
 
+require get_theme_file_path('/inc/search-route.php');
+
 function actionName($name) {
   $PREFIX = 'university';
   $format = '%s_%s';
@@ -86,7 +88,7 @@ function university_api() {
   )); 
 }
 
-add_action('rest_api_init', actionName('api'));
 add_action('wp_enqueue_scripts', actionName('files'));
 add_action('after_setup_theme', actionName('features'));
 add_action('pre_get_posts', actionName('adjust_queries'));
+add_action('rest_api_init', actionName('api'));

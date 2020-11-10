@@ -65,48 +65,82 @@ class Search {
 	}
 	
 	getResults() {
-		const postsPromise = fetch(`${universityData.base_url}/wp-json/wp/v2/posts?search=${this.searchTerm}`)
-		const pagesPromise = fetch(`${universityData.base_url}/wp-json/wp/v2/pages?search=${this.searchTerm}`)
-
-		Promise.all([postsPromise, pagesPromise])
-			.then(blobs => Promise.all(blobs.map(blob => blob.json())))
-			.then(([posts, pages]) => {
-				const data = posts.concat(pages)
+		fetch(`${universityData.base_url}/wp-json/university/v1/search?term=${this.searchTerm}`)
+			.then(res => res.json())
+			.then(data => {
 				this.outputSection.innerHTML = ''
-				const title = document.createElement('h2')
-				const itemList = document.createElement('ul')
-				const noResult = document.createElement('p') 
-				title.textContent = 'General Information'
-				noResult.textContent = `No general information found matching "${this.searchTerm}".`
-				title.classList.add('search-overlay__section-title')
-				itemList.classList.add('link-list')
-				itemList.classList.add('min-list')
+
+				const row = document.createElement('div')
+				const col1 = document.createElement('div')
+				const col2 = document.createElement('div')
+				const col3 = document.createElement('div')
+				const generalTitle = this.createTitle('General Information')
+				const programsTitle = this.createTitle('Programs')
+				const professorsTitle = this.createTitle('Professors')
+				const campusesTitle = this.createTitle('Campuses')
+				const eventsTitle = this.createTitle('Events')
+
+				row.classList.add('row')
+				col1.classList.add('one-third')
+				col2.classList.add('one-third')
+				col3.classList.add('one-third')
+
+				col1.appendChild(generalTitle);
+				col1.appendChild(this.addItem(data.generalInfo, `No general information found matching "${this.searchTerm}".`))
+
+				col2.appendChild(programsTitle)
+				col2.appendChild(this.addItem(data.programs, `No programs match that search.`))
+				col2.appendChild(professorsTitle)
+				col2.appendChild(this.addItem(data.professors, `No prefessors match that search.`))
 
 
-				this.outputSection.appendChild(title)
-				if (!data.length) {
-					this.outputSection.appendChild(noResult)
-					this.isSpinnerVisible = false
-					return
-				}
-
-				data.forEach(post => {
-					const item = document.createElement('li')
-					const itemLink = document.createElement('a')
-					itemLink.textContent = post.title.rendered
-					itemLink.href = post.link
-					item.appendChild(itemLink)
-					if (post.type == 'post') {
-						const authorName = document.createElement('span')
-						authorName.textContent = ` by ${post.authorName}` 
-						item.appendChild(authorName)
-					}
-					itemList.appendChild(item)
-				})
-
-				this.outputSection.appendChild(itemList)
+				col3.appendChild(campusesTitle)
+				col3.appendChild(this.addItem(data.campuses, `No compuses match that search.`))
+				col3.appendChild(eventsTitle)
+				col3.appendChild(this.addItem(data.events, `No events match that search.`))
+				
+				row.appendChild(col1)
+				row.appendChild(col2)
+				row.appendChild(col3)
+				this.outputSection.appendChild(row)
 				this.isSpinnerVisible = false
 			})
+	}
+
+	addItem(data, noResultText) {
+		if (!data.length) {
+			this.isSpinnerVisible = false
+			const noResult = document.createElement('p') 
+			noResult.textContent = noResultText
+			return noResult
+		}
+
+		const ul = document.createElement('ul')
+		ul.classList.add('link-list')
+		ul.classList.add('min-list')
+
+		data.forEach(res => {
+			const item = document.createElement('li')
+			const itemLink = document.createElement('a')
+			itemLink.textContent = res.title
+			itemLink.href = res.permalink
+			item.appendChild(itemLink)
+			if (res?.postType === 'post') {
+				const authorName = document.createElement('span')
+				authorName.textContent = ` by ${res.authorName}` 
+				item.appendChild(authorName)
+			}						
+			ul.appendChild(item)
+		})
+
+		return ul;
+	}
+
+	createTitle(text) {
+		const title = document.createElement('h2')
+		title.classList.add('search-overlay__section-title')
+		title.textContent = text
+		return title;
 	}
 }
 

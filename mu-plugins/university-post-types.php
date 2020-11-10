@@ -40,7 +40,7 @@ function university_post_types() {
 
   // Program post type
   register_post_type('program', array(
-    'supports' => array('title', 'editor'),
+    'supports' => array('title'),
     'rewrite' => array('slug' => 'programs'),
     'has_archive' => true,
     'public' => true,
@@ -56,6 +56,7 @@ function university_post_types() {
 
   // Professor post type
   register_post_type('professor', array(
+    'show_in_rest' => true,
     'supports' => array('title', 'editor', 'thumbnail'),
     'public' => true,
     'labels' => array(
@@ -70,6 +71,6 @@ function university_post_types() {
 }
 
 // add custom post type
-add_action( 'init', sprintf($format, $PREFIX, 'post_types'));
+add_action('init', sprintf($format, $PREFIX, 'post_types'));
 
 ?>
