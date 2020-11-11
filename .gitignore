@@ -5,7 +5,7 @@
 ### WordPress ###
 # ignore everything in the root except the "wp-content" directory.
 !wp-content/
-
+src/js/scripts-bundled.js
 # ignore everything in the "wp-content" directory, except:
 # "mu-plugins", "plugins", "themes" directory
 wp-content/*
