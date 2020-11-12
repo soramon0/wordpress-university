@@ -88,6 +88,10 @@ function university_api() {
   register_rest_field('post', 'authorName', array(
     'get_callback' => function() {return get_the_author();}
   )); 
+
+  register_rest_field('note', 'noteCount', array(
+    'get_callback' => function() {return count_user_posts(get_current_user_id(), 'note');}
+  )); 
 }
 
 function university_no_adminbar_for_subs() {
@@ -121,6 +125,25 @@ function university_login_css() {
   wp_enqueue_style('custom-google-fonts', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
 }
 
+function university_markNotePrivate($data, $postarr) {
+  if ($data['post_type'] == 'note') {
+     if (count_user_posts(get_current_user_id(), 'note') > 4 and !$postarr['ID']) {
+      die('your have reached your notes limit.');
+    }
+
+
+    $data['post_content'] = sanitize_textarea_field($data['post_content']);
+    $data['post_title'] = sanitize_text_field($data['post_title']);
+  }
+
+  if ($data['post_type'] == 'note' and $data['post_status'] != 'trash') {
+    $data['post_status'] = 'private';
+  }
+
+  return $data;
+}
+
+add_filter('wp_insert_post_data', actionName('markNotePrivate'), 10, 2);
 add_filter('login_headertitle', actionName('header_title'));
 add_filter('login_headerurl', actionName('header_url'));
 add_action('login_enqueue_scripts', actionName('login_css'));
