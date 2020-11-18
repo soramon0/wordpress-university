@@ -90,6 +90,21 @@ function university_post_types() {
     ),
     'menu_icon' => 'dashicons-welcome-write-blog'
   ));
+
+  // Likes post type
+  register_post_type('like', array(
+    'supports' => array('title'),
+    'public' => false, // will hide notess from other users
+    'show_ui' => true, // will show this in admin dashboard
+    'labels' => array(
+			'name' => 'Likes',
+			'add_new_item' => 'Add New Like',
+			'edit_item' => 'Edit Like',
+			'all_items' => 'All Likes',
+			'singular_name' => 'Like'
+    ),
+    'menu_icon' => 'dashicons-heart'
+  ));
 }
 
 // add custom post type
